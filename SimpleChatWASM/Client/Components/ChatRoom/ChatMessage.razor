@@ -1,0 +1,17 @@
+﻿@using SimpleChatWASM.Shared.Entities
+
+@if(model != null)
+{
+    <div>
+        <p>@($"{model.User.UserName}:")</p>
+        <p>@model.Contents</p>
+        <p>@model.InputDateTime</p>
+
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public MessageEntity model{ get; set; }
+}

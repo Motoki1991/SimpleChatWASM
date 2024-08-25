@@ -1,0 +1,21 @@
+﻿@page "/chat"
+@using SimpleChatWASM.Client.Components.ChatRoom
+@using SimpleChatWASM.Client.Components.ChatRoomNav
+@using SimpleChatWASM.Shared.Entities
+
+
+<h3>Chat</h3>
+<CascadingValue TValue="RoomEntity" Value="@CurrentRoom" Name="current_room">
+    <div class="row">
+        <div class="col-md-3">
+            <ChatRoomList @bind-CurrentRoom=CurrentRoom></ChatRoomList>
+        </div>
+        <div class="col-md-9">
+            <ChatRoom Room="CurrentRoom"></ChatRoom>
+        </div>
+    </div>
+</CascadingValue>
+@code {
+    [CascadingParameter(Name = "current_room")]
+    public RoomEntity CurrentRoom { get; set; } = new RoomEntity();
+}

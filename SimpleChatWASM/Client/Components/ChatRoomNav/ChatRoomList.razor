@@ -1,0 +1,92 @@
+﻿
+
+@using SimpleChatWASM.Client.Models.APIAgents
+@using SimpleChatWASM.Shared.Entities
+@using SimpleChatWASM.Shared.Repositories
+
+@inject HttpClient httpClient
+
+<h6>チャットリスト</h6>
+<label for="user_select">ユーザー選択</label>
+<InputSelect TValue="string" @bind-Value="SelectedUser" id="user_select">
+    @if(AllUsers?.Any() == true)
+    {
+        @foreach (var item in AllUsers)
+        {
+            <option value="@item.UserID">@item.UserName</option>
+        }
+    }    
+</InputSelect>
+@* 入力されたユーザーを並べる *@
+@foreach(var item in SelectedUsers)
+{
+    <UserListItem User="item"/>
+}
+
+@* トークルームの新規作成 *@
+<button type="button" @onclick="CreateNewRoom">新規作成</button>
+
+@* トークルームの一覧 *@
+@foreach(var item in Rooms)
+{
+    <div @onclick=@(()=>OpenChatRoom(item))>
+        <ChatRoomListItem Room="item"/>
+    </div>
+}
+
+@code {
+    private string msg { get; set; } = "メッセージ";
+    [CascadingParameter(Name = "account_info")]
+    public UserEntity AccountInfo { get; set; }
+    [CascadingParameter(Name = "all_users")]
+    public List<UserEntity> AllUsers { get; set; }
+
+    public List<UserEntity> SelectedUsers { get; set; } = new List<UserEntity>(); 
+    public string SelectedUser{ get; set; }
+    public List<RoomEntity> Rooms { get; set; } = new List<RoomEntity>();
+
+    [Parameter]
+    public RoomEntity CurrentRoom { get; set; }
+    [Parameter]
+    public EventCallback<RoomEntity> CurrentRoomChanged{ get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        msg += "チャットメニューのレンダリング";
+        if(string.IsNullOrEmpty(AccountInfo?.UserID) == false)
+        {
+            Rooms = await ChatRoomControllerAgent.GetRoomsByUser(httpClient,AccountInfo);
+        }        
+    }
+
+    /// <summary>
+    /// 新規のチャットルームを生成。既に同一メンバーのチャットがある場合はそのチャットを開く。
+    /// </summary>
+    public async Task CreateNewRoom()
+    {
+        CurrentRoom = await ChatRoomControllerAgent.CreateNewRoom(httpClient, SelectedUsers);
+        await CurrentRoomChanged.InvokeAsync(CurrentRoom);        
+    }
+    /// <summary>
+    /// チャットルームを開く
+    /// </summary>
+    public async Task OpenChatRoom(RoomEntity room)
+    {        
+        CurrentRoom = room;
+        await CurrentRoomChanged.InvokeAsync(CurrentRoom);        
+    }
+    /// <summary>
+    /// ユーザー選択の挙動
+    /// </summary>
+    /// <param name="user"></param>
+    public void OnSelectUser(UserEntity user)
+    {
+        SelectedUsers.Add(user);
+        Console.WriteLine($"ユーザー追加[{user.UserName}]");
+    }
+    public async Task ConsoleMessage()
+    {
+        Console.WriteLine("メッセージに到達しました");
+    }
+}

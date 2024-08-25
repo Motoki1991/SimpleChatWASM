@@ -1,0 +1,36 @@
+﻿@using SimpleChatWASM.Shared.Entities
+@if(Room != null)
+{
+    <div>
+        <p>@RoomTitle</p>
+    </div>
+    <div>
+        <p>@LastMessageDateTime</p>
+    </div>   
+}
+@code {
+    [Parameter]
+    public RoomEntity Room{ get; set; }
+
+    private string RoomTitle
+    {
+        get
+        {
+            var result = "";
+            if(string.IsNullOrEmpty(Room?.RoomName) && Room?.Members?.Any()==true)
+            {
+                result = string.Join('、', Room.Members.Select(s => s.UserName));
+            }
+            return result;
+        }
+    }
+
+    private string LastMessageDateTime
+    {
+        get
+        {
+            var result = Room?.LastMessage?.InputDateTime.ToString("yyyy/M/d H:m") ?? "";
+            return result;
+        }
+    }
+}

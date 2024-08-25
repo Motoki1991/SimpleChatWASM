@@ -1,0 +1,53 @@
+﻿@using SimpleChatWASM.Client.Models.APIAgents
+@using SimpleChatWASM.Shared.Entities
+
+@inject HttpClient httpClient
+
+@if(Room != null)
+{
+    <h5>@MemberNames</h5>
+
+    <div class="chat-room">
+        @foreach(var item in Messages)
+        {
+            <ChatMessage model="item"></ChatMessage>
+        }
+    </div>
+    <div class="new-message">
+        <input type="text" />
+        <button type="button">送信</button>
+    </div>
+}
+@code {
+
+    [Parameter]
+    public RoomEntity Room { get; set; }
+    [CascadingParameter(Name = "account_info")]
+    public UserEntity AccountInfo { get; set; }
+
+    private IEnumerable<MessageEntity> Messages { get; set; } = new List<MessageEntity>();
+
+
+    private string MemberNames
+    {
+        get
+        {
+            var result = "";
+            if (Room?.Members?.Any()==true)
+            {
+                result = string.Join('、', Room.Members.Select(s => s.UserName));
+            }
+            return result;    
+        }
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if(Room != null)
+        {
+            Messages = await ChatRoomControllerAgent.GetChatRoomMessages(httpClient, Room);
+        }        
+    }
+
+
+}
