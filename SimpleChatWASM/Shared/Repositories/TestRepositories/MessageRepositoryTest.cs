@@ -84,6 +84,11 @@ namespace SimpleChatWASM.Shared.Repositories.TestRepositories
             return _messages.Where(w=>w.Room.RoomID==room_id);
         }
 
+        public MessageEntity InsertMessage(MessageEntity message)
+        {
+            _messages.Add(message);
+            return message;
+        }
 
     }
 }

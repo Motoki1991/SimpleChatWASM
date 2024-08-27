@@ -43,5 +43,29 @@ namespace SimpleChatWASM.Server.Controllers
             }
             return result;
         }
+
+        [HttpGet("tryauth")]
+        public ApiResponse<UserEntity> TryAuth(string user_id, string password)
+        {
+            var result = new ApiResponse<UserEntity>();
+            try
+            {
+                if (_userRepository.TryAuth(user_id, password, out var user))
+                {
+                    result.data = user;
+                    Response.Cookies.Append("UserName", user_id);
+                    Response.Cookies.Append("Password", password);
+                }
+                else
+                {
+                    result.message = "認証に失敗しました。ユーザー名かパスワードが間違えている可能性があります。";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.message = ex.Message;
+            }
+            return result;
+        }
     }
 }

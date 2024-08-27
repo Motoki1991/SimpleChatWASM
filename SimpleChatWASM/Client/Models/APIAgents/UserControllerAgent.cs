@@ -27,5 +27,14 @@ namespace SimpleChatWASM.Client.Models.APIAgents
             }
             return response.data;
         }
+        public static async Task<UserEntity> TryAuth(HttpClient httpClient, string user_id, string password)
+        {            
+            var response = await httpClient.GetFromJsonAsync<ApiResponse<UserEntity>>($"User/tryauth?user_id={user_id}&password={password}");
+            if (string.IsNullOrEmpty(response.message) == false)
+            {
+                throw new Exception(response.message);
+            }
+            return response.data;
+        }
     }
 }

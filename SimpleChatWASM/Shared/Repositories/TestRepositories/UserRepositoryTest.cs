@@ -25,5 +25,15 @@ namespace SimpleChatWASM.Shared.Repositories.TestRepositories
         {
             return _users;
         }
+        public bool TryAuth(string username, string password, out UserEntity userEntity)
+        {
+            var result = false;
+            userEntity = _users.Where(w => w.UserID == username && w.LoginPassword == password).FirstOrDefault();
+            if(userEntity != null)
+            {
+                result = true;
+            }
+            return result;
+        }
     }
 }

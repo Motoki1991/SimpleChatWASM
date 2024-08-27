@@ -22,7 +22,8 @@
     </CascadingValue>
 </div>
 @code{
-    public UserEntity AccountInfo { get; set; } = new UserEntity();
+    [CascadingParameter(Name = "account_info")]
+    public UserEntity AccountInfo { get; set; }
     public List<UserEntity> AllUsers { get; set; } = new List<UserEntity>();
     public string msg{ get; set; }
 

@@ -6,7 +6,7 @@ namespace SimpleChatWASM.Shared.Repositories.TestRepositories
     {
         private static List<UserEntity> _sample_users = new List<UserEntity>()
         {
-            new UserEntity(){UserID="tsuruda",UserName="鶴田　太郎"},
+            new UserEntity(){UserID="tsuruda",UserName="鶴田　太郎",LoginPassword="tsuruda"},
             new UserEntity(){UserID="tanaka",UserName="田中　次郎"},
             new UserEntity(){UserID="satou",UserName="佐藤　三郎"},
         };

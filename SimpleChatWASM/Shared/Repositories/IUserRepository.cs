@@ -6,5 +6,6 @@ namespace SimpleChatWASM.Shared.Repositories
     {
         UserEntity GetById(string user_id);
         List<UserEntity> GetAllUsers();
+        bool TryAuth(string username, string password,out UserEntity userEntity);
     }
 }

@@ -10,12 +10,14 @@ namespace SimpleChatWASM.Server.Controllers
     [ApiController]
     public class HomeController : Controller
     {
-        
+        private IUserRepository _userRepository;
         
         public HomeController(IUserRepository userRepository)
         {
-            
+            _userRepository = userRepository;
         }
+
+        
         
 
         
