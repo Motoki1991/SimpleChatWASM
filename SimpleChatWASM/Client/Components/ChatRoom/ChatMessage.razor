@@ -2,11 +2,9 @@
 
 @if(model != null)
 {
-    <div>
-        <p>@($"{model.User.UserName}:")</p>
-        <p>@model.Contents</p>
-        <p>@model.InputDateTime</p>
-
+    <div class=@($"{(IsMe() ? "mycomment" : "says")}")>
+        <p class="user-name">@($"{model.User.UserName}:{@model.GetDate()}")</p>
+        <p class="contents">@model.Contents</p>
     </div>
 }
 
@@ -14,4 +12,22 @@
 
     [Parameter]
     public MessageEntity model{ get; set; }
+
+    [CascadingParameter(Name = "account_info")]
+    public UserEntity AccountInfo { get; set; }
+
+    /// <summary>
+    /// 発言者が自分だったらTrue
+    /// </summary>
+    /// <returns></returns>
+    private bool IsMe()
+    {
+        var result = false;
+        if(string.IsNullOrEmpty(model?.User.UserID) == false
+           && AccountInfo?.UserID == model?.User.UserID)
+        {
+            result = true;
+        }
+        return result;
+    }
 }

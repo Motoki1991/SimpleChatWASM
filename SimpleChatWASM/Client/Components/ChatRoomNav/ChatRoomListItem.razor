@@ -1,12 +1,15 @@
 ﻿@using SimpleChatWASM.Shared.Entities
 @if(Room != null)
 {
-    <div>
-        <p>@RoomTitle</p>
+    <div class="room-list-item">
+        <div class="room-title">
+            <p>@RoomTitle</p>
+        </div>
+        <div class="room-info">
+            <p class="last-message-datetime">@LastMessageDateTime</p>
+            <p class="last-contents">@Room.LastMessage?.Contents</p>
+        </div>   
     </div>
-    <div>
-        <p>@LastMessageDateTime</p>
-    </div>   
 }
 @code {
     [Parameter]

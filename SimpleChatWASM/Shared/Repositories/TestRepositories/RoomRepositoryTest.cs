@@ -14,17 +14,35 @@ namespace SimpleChatWASM.Shared.Repositories.TestRepositories
             new RoomEntity()
             {
                 RoomID=1,
-                Members = new List<UserEntity>(){SampleUsers.GetSampleUser("tsuruda"),SampleUsers.GetSampleUser("tanaka")}
+                Members = new List<UserEntity>(){SampleUsers.GetSampleUser("tsuruda"),SampleUsers.GetSampleUser("tanaka")},
+                LastMessage = new MessageEntity()
+                {
+                    Contents="問題ありません。",
+                    User=SampleUsers.GetSampleUser("tsuruda"),
+                    InputDateTime=new DateTime(2024,3,20,17,35,0)
+                }
             },
             new RoomEntity()
             {
                 RoomID = 2,
-                Members = new List<UserEntity>(){SampleUsers.GetSampleUser("tsuruda"),SampleUsers.GetSampleUser("satou")}
+                Members = new List<UserEntity>(){SampleUsers.GetSampleUser("tsuruda"),SampleUsers.GetSampleUser("satou")},
+                LastMessage = new MessageEntity()
+                {
+                    Contents="こんばんは。",
+                    User=SampleUsers.GetSampleUser("satou"),
+                    InputDateTime=new DateTime(2024,3,20,20,35,0)
+                }
             },
             new RoomEntity()
             {
                 RoomID = 3,
-                Members =SampleUsers.GetSampleUsers()
+                Members =SampleUsers.GetSampleUsers(),
+                LastMessage = new MessageEntity()
+                {
+                    Contents="かきくけこ。",                    
+                    User=SampleUsers.GetSampleUser("satou"),
+                    InputDateTime=new DateTime(2024,3,20,16,35,0)
+                }
             }
         };
 

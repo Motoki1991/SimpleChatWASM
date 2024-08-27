@@ -3,21 +3,24 @@
 
 @inject HttpClient httpClient
 
-@if(Room != null)
-{
-    <h5>@MemberNames</h5>
+<div class="chat-room">
+    @if(Room != null)
+    {
+        <h5 class="room-title">@MemberNames</h5>
 
-    <div class="chat-room">
-        @foreach(var item in Messages)
-        {
-            <ChatMessage model="item"></ChatMessage>
-        }
-    </div>
-    <div class="new-message">
-        <input type="text" />
-        <button type="button">送信</button>
-    </div>
-}
+        <div class="room-contents">
+            @foreach(var item in Messages)
+            {
+                <ChatMessage model="item"></ChatMessage>
+            }            
+        </div>
+        <div class="new-message">
+            <input type="text" />
+            <button type="button">送信</button>
+        </div>
+    }
+</div>
+
 @code {
 
     [Parameter]

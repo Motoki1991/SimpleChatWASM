@@ -10,6 +10,10 @@
         public string Contents { get; set; }
         public List<string> MentionIDs { get; set; }
 
-
+        public string GetDate()
+        {
+            if(InputDateTime == null) { return ""; }
+            return InputDateTime.ToString("yyyy/M/d");
+        }
     }
 }

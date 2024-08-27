@@ -6,7 +6,6 @@
 
 @inject HttpClient httpClient
 
-<h6>チャットリスト</h6>
 <label for="user_select">ユーザー選択</label>
 <InputSelect TValue="string" @bind-Value="SelectedUser" id="user_select">
     @if(AllUsers?.Any() == true)
