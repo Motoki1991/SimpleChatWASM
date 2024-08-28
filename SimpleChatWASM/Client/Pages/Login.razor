@@ -1,0 +1,35 @@
+﻿@using SimpleChatWASM.Client.Models.APIAgents
+@using SimpleChatWASM.Shared.Entities
+
+@inject HttpClient httpClient
+
+<div>
+    <label>ユーザーID：</label>
+    <input type="text" id="auth_username" @bind-value="@user_id" />
+</div>
+<div>
+    <label>パスワード：</label>
+    <input type="text" id="auth_password" @bind-value="@password" />
+</div>
+<div>
+    <button type="button" @onclick="OnLoginClick">ログイン</button>
+</div>
+
+@code {
+
+    [Parameter]
+    public UserEntity AccountInfo{ get; set; }
+    [Parameter]
+    public EventCallback<UserEntity> AccountInfoChanged{ get; set; }
+
+    private string user_id { get; set; }
+    private string password { get; set; }
+
+    private async Task OnLoginClick()
+    {
+        AccountInfo = await UserControllerAgent.TryAuth(httpClient, user_id, password);
+        await AccountInfoChanged.InvokeAsync(AccountInfo);
+    }
+
+
+}

@@ -1,5 +1,6 @@
 using SimpleChatWASM.Shared.Repositories.TestRepositories;
 using SimpleChatWASM.Shared.Repositories;
+using SimpleChatWASM.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,9 @@ builder.Services.AddSingleton<IInformationRepository, InformationRepositoryTest>
 //}
 //);
 
+//’Ç‰Á
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -77,5 +81,8 @@ app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+
+//’Ç‰Á
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();

@@ -6,7 +6,7 @@
 
 @inject HttpClient httpClient
 
-<label for="user_select">ユーザー選択</label>
+@* <label for="user_select">ユーザー選択</label>
 <InputSelect TValue="string" @bind-Value="SelectedUser" id="user_select">
     @if(AllUsers?.Any() == true)
     {
@@ -17,13 +17,13 @@
     }    
 </InputSelect>
 @* 入力されたユーザーを並べる *@
-@foreach(var item in SelectedUsers)
+@* @foreach(var item in SelectedUsers)
 {
     <UserListItem User="item"/>
-}
+} *@
 
 @* トークルームの新規作成 *@
-<button type="button" @onclick="CreateNewRoom">新規作成</button>
+@* <button type="button" @onclick="CreateNewRoom">新規作成</button> *@ 
 
 @* トークルームの一覧 *@
 @foreach(var item in Rooms)
@@ -42,22 +42,13 @@
 
     public List<UserEntity> SelectedUsers { get; set; } = new List<UserEntity>(); 
     public string SelectedUser{ get; set; }
-    public List<RoomEntity> Rooms { get; set; } = new List<RoomEntity>();
 
+    [Parameter]
+    public List<RoomEntity> Rooms { get; set; } = new List<RoomEntity>();
     [Parameter]
     public RoomEntity CurrentRoom { get; set; }
     [Parameter]
     public EventCallback<RoomEntity> CurrentRoomChanged{ get; set; }
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        msg += "チャットメニューのレンダリング";
-        if(string.IsNullOrEmpty(AccountInfo?.UserID) == false)
-        {
-            Rooms = await ChatRoomControllerAgent.GetRoomsByUser(httpClient,AccountInfo);
-        }        
-    }
 
     /// <summary>
     /// 新規のチャットルームを生成。既に同一メンバーのチャットがある場合はそのチャットを開く。
@@ -83,9 +74,5 @@
     {
         SelectedUsers.Add(user);
         Console.WriteLine($"ユーザー追加[{user.UserName}]");
-    }
-    public async Task ConsoleMessage()
-    {
-        Console.WriteLine("メッセージに到達しました");
     }
 }

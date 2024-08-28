@@ -15,7 +15,14 @@
 
             <main>
                 <article class="content px-4">
-                    @Body
+                    @if(AccountInfo == null)
+                    {
+                        <SimpleChatWASM.Client.Pages.Login @bind-AccountInfo="AccountInfo"/>
+                    }
+                    else
+                    {
+                        @Body
+                    }                    
                 </article>
             </main>
         </CascadingValue>
@@ -31,11 +38,11 @@
     {
         try
         {
-            var user = await UserControllerAgent.GetUserById(httpClient,"tsuruda");
-            if (string.IsNullOrEmpty(user?.UserID) == false)
-            {
-                AccountInfo = user;
-            }
+            // var user = await UserControllerAgent.GetUserById(httpClient,"tsuruda");
+            // if (string.IsNullOrEmpty(user?.UserID) == false)
+            // {
+            //     AccountInfo = user;
+            // }
             AllUsers = await UserControllerAgent.GetAllUsers(httpClient);
         }
         catch (Exception ex)

@@ -4,37 +4,12 @@
 
 @inject HttpClient httpClient
 
-@if(AccountInfo == null)
-{
-    <div>
-        <label>ユーザーID：</label>
-        <input type="text" id="auth_username" @bind-value="@user_id"/>
-    </div>
-    <div>
-        <label>パスワード：</label>
-        <input type="text" id="auth_password" @bind-value="@password"/>
-    </div>
-    <div>
-        <button type="button" @onclick="OnLoginClick">ログイン</button>
-    </div>
-}
-else
-{
-    <h3>@($"こんにちは、{AccountInfo.UserName}さん。")</h3>
-
-}
+<h3>@($"こんにちは、{AccountInfo.UserName}さん。")</h3>
 
 @code{
 
     [CascadingParameter(Name ="account_info")]
     public UserEntity AccountInfo { get; set; }
 
-    private string user_id{ get; set; }
-    private string password{ get; set; }
-
-    private async Task OnLoginClick()
-    {
-        AccountInfo = await UserControllerAgent.TryAuth(httpClient, user_id, password);
-        StateHasChanged();
-    }
+    
 }

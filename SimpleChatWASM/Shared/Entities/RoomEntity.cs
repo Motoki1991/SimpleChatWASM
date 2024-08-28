@@ -8,8 +8,8 @@ namespace SimpleChatWASM.Shared.Entities
 
         public string? RoomName { get; set; }
 
-        public MessageEntity? LastMessage { get; set; }
         public IEnumerable<UserEntity> Members { get; set; } = new List<UserEntity>();
-                
+
+        public MessageEntity? LastMessage { get; set; }                
     }
 }

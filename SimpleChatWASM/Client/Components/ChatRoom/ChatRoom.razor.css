@@ -21,6 +21,9 @@
     font-size: 14px;
     background: #7da4cd;
     min-height:600px;
+    max-height:600px;
+    overflow-y:scroll;
+    overflow-x:hidden;
 }
 .new-message{
     margin:5px 5px 5px 0px;

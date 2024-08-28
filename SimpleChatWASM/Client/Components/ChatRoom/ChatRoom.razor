@@ -1,22 +1,24 @@
 ﻿@using SimpleChatWASM.Client.Models.APIAgents
+@using SimpleChatWASM.Client.Models.Services
 @using SimpleChatWASM.Shared.Entities
 
 @inject HttpClient httpClient
+@inject IScroll Scroll
 
 <div class="chat-room">
     @if(Room != null)
     {
         <h5 class="room-title">@MemberNames</h5>
 
-        <div class="room-contents">
-            @foreach(var item in Messages)
+        <div class="room-contents" @ref=@room_contents>
+            @foreach (var item in Messages)
             {
                 <ChatMessage model="item"></ChatMessage>
             }            
         </div>
         <div class="new-message">
-            <input type="text" />
-            <button type="button">送信</button>
+            <input type="text" @bind-value="@MessageContext"/>
+            <button type="button" @onclick="@OnSendClick">送信</button>
         </div>
     }
 </div>
@@ -26,9 +28,15 @@
     [Parameter]
     public RoomEntity Room { get; set; }
     [CascadingParameter(Name = "account_info")]
-    public UserEntity AccountInfo { get; set; }
+    public UserEntity AccountInfo { get; set; }    
 
-    private IEnumerable<MessageEntity> Messages { get; set; } = new List<MessageEntity>();
+    [Parameter]
+    public EventCallback<MessageEntity> OnMessageSend{ get; set; }
+    [Parameter]
+    public IEnumerable<MessageEntity> Messages { get; set; } = new List<MessageEntity>();
+
+    private string MessageContext{ get; set; }
+    public ElementReference room_contents { get; set; }
 
 
     private string MemberNames
@@ -44,13 +52,25 @@
         }
     }
 
-    protected async override Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        if(Room != null)
+        if(Scroll != null)
         {
-            Messages = await ChatRoomControllerAgent.GetChatRoomMessages(httpClient, Room);
-        }        
+            await Scroll.Init();
+        }
     }
 
+    private async Task OnSendClick()
+    {
+        var message = new MessageEntity()
+        {
+            Room = Room,
+            User = AccountInfo,
+            Contents = MessageContext,
+            InputDateTime = DateTime.Now
+        };
+        await OnMessageSend.InvokeAsync(message);
 
+        await Scroll.ScrollBottom(room_contents);
+    }
 }

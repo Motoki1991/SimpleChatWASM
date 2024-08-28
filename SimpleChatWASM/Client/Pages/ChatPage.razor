@@ -1,20 +1,95 @@
 ﻿@page "/chat"
 @using SimpleChatWASM.Client.Components.ChatRoom
 @using SimpleChatWASM.Client.Components.ChatRoomNav
+@using SimpleChatWASM.Client.Models.APIAgents
 @using SimpleChatWASM.Shared.Entities
+@using Microsoft.AspNetCore.SignalR.Client;
+@using System.Net
+
+@inject NavigationManager NavigationManager
+@inject HttpClient httpClient
 
 
 <CascadingValue TValue="RoomEntity" Value="@CurrentRoom" Name="current_room">
     <div class="row">
         <div class="col-md-3">
-            <ChatRoomList @bind-CurrentRoom=CurrentRoom></ChatRoomList>
+            <ChatRoomList CurrentRoom=CurrentRoom CurrentRoomChanged="CurrentRoomChanged" Rooms="Rooms"></ChatRoomList>
         </div>
         <div class="col-md-9">
-            <ChatRoom Room="CurrentRoom"></ChatRoom>
+            <ChatRoom Room="CurrentRoom" OnMessageSend="SendMessage" Messages="CurrentRoomMessages"></ChatRoom>
         </div>
     </div>
 </CascadingValue>
 @code {
     [CascadingParameter(Name = "current_room")]
     public RoomEntity CurrentRoom { get; set; } = new RoomEntity();
+    [CascadingParameter(Name = "account_info")]
+    public UserEntity AccountInfo { get; set; }    
+    public List<RoomEntity> Rooms { get; set; } = new List<RoomEntity>();
+    public List<MessageEntity> CurrentRoomMessages { get; set; } = new List<MessageEntity>();
+
+    private HubConnection? hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrEmpty(AccountInfo?.UserID) == false)
+        {
+            Rooms = await ChatRoomControllerAgent.GetRoomsByUser(httpClient, AccountInfo);
+        }
+
+        var container = new CookieContainer();
+        var cookie = new Cookie()
+            {
+                Name = ".AspNetCore.SignalR.HubCallerContext.UserIdentifier",
+                Domain = "localhost",
+                //Value = AccountInfo?.UserID
+                Value = "tsuruda"
+            };
+        container.Add(cookie);
+
+        hubConnection = new HubConnectionBuilder()
+                        .WithUrl(NavigationManager.ToAbsoluteUri("chathub")
+                        // ,options =>
+                        // {
+                        //     options.Cookies = container;
+                        // }
+                        )
+                        .Build();
+
+        hubConnection.On<MessageEntity?>("ReceiveMessage", (MessageEntity) =>
+        {            
+            if(CurrentRoom.RoomID == MessageEntity?.Room?.RoomID)
+            {
+                CurrentRoomMessages.Add(MessageEntity);
+                InvokeAsync(StateHasChanged);
+            }
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    public async Task CurrentRoomChanged(RoomEntity Room)
+    {        
+        if (Room != null)
+        {
+            CurrentRoom = Room;
+            CurrentRoomMessages = await ChatRoomControllerAgent.GetChatRoomMessages(httpClient, Room);
+        }
+        StateHasChanged();
+    }
+
+    public async Task SendMessage(MessageEntity message)
+    {
+        if(hubConnection?.State != HubConnectionState.Connected &&
+            hubConnection != null)
+        {
+            await hubConnection.StartAsync();
+        }
+        
+        if(hubConnection != null)
+        {
+            await hubConnection.SendAsync("SendMessage", message);
+        }
+    }
+
 }

@@ -6,9 +6,18 @@ namespace SimpleChatWASM.Shared.Repositories.TestRepositories
     {
         private static List<UserEntity> _sample_users = new List<UserEntity>()
         {
-            new UserEntity(){UserID="tsuruda",UserName="鶴田　太郎",LoginPassword="tsuruda"},
-            new UserEntity(){UserID="tanaka",UserName="田中　次郎"},
-            new UserEntity(){UserID="satou",UserName="佐藤　三郎"},
+            new UserEntity(){UserID="tsuruda",UserName="鶴田",LoginPassword="tsuruda"},
+            new UserEntity(){UserID="tanaka",UserName="田中",LoginPassword="tanaka"},
+            new UserEntity(){UserID="furukawa",UserName="古川",LoginPassword="furukawa"},
+            new UserEntity(){UserID="imamura",UserName="今村",LoginPassword="imamura"},
+            new UserEntity(){UserID="komuro",UserName="小室",LoginPassword="komuro"},
+            new UserEntity(){UserID="matsunaga",UserName="松永",LoginPassword="matsunaga"},
+            new UserEntity(){UserID="abe",UserName="阿部",LoginPassword="abe"},
+            new UserEntity(){UserID="tamori",UserName="太森",LoginPassword="tamori"},
+            new UserEntity(){UserID="imaizumi",UserName="今泉",LoginPassword="imaizumi"},
+            new UserEntity(){UserID="negi",UserName="根木",LoginPassword="negi"},
+            new UserEntity(){UserID="satou",UserName="佐藤",LoginPassword="satou"},
+
         };
 
         public static List<UserEntity> GetSampleUsers()

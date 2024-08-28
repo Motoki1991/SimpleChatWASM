@@ -27,6 +27,7 @@ namespace SimpleChatWASM.Server.Hubs
         public override Task OnConnectedAsync()
         {
             var id = this.Context.UserIdentifier;
+
             //MyUsers.TryAdd(Context.ConnectionId, new MyUserType() { ConnectionId = Context.ConnectionId });
 
             return base.OnConnectedAsync();
@@ -41,11 +42,12 @@ namespace SimpleChatWASM.Server.Hubs
             return base.OnDisconnectedAsync(ex);
         }
 
-        public async Task SendMessage(MessageEntity message,RoomEntity room) 
+        public async Task SendMessage(MessageEntity message) 
         {
-            room.LastMessage = message;
+            //ここでDBへデータ挿入
             _messageRepository.InsertMessage(message);
 
+            await Clients.All.SendAsync("ReceiveMessage", message);
 
         }
     }
